@@ -1,0 +1,21 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+
+/*avoid StageText*/
+
+s|TextInput
+{
+	skinClass: ClassReference("spark.skins.mobile.TextInputSkin");
+}
+
+s|TextArea
+{
+	skinClass: ClassReference("spark.skins.mobile.TextAreaSkin");
+}
+
+s|FormHeading
+{
+	fontSize: 24;
+	fontWeight: bold;
+	textAlign: center;
+}

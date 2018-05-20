@@ -1,0 +1,22 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+global
+{
+	fontSize: 12;
+}
+
+mx|Alert
+{
+	modalTransparencyBlur: 0;
+	modalTransparency: 0;
+	modalTransparencyColor: black;
+	modalTransparencyDuration: 0;
+}
+
+.bigTitle
+{
+	fontWeight: bold;
+	fontSize: 12;
+}

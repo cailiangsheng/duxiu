@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="sigma.app.duxiu.utils.down.DownloadItem"/>
+    <classEntry path="sigma.app.duxiu.utils.down.IDownUrl"/>
+    <classEntry path="sigma.app.duxiu.utils.down.ReadUrl"/>
+    <classEntry path="sigma.app.duxiu.utils.down.SaveUrl"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

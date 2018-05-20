@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			  xmlns:s="library://ns.adobe.com/flex/spark" 
+			  xmlns:mx="library://ns.adobe.com/flex/mx" 
+			  xmlns:components="sigma.lib.components.*" 
+			  xmlns:view="sigma.app.duxiu.view.*" 
+			  width="100%" height="100%" horizontalAlign="center" verticalGap="0">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<mx:ToggleButtonBar id="bar" dataProvider="tabs"/>
+	<mx:ViewStack id="tabs" width="100%" height="100%" creationPolicy="all">
+		<components:SingleBrowser width="100%" label="浏览" id="browser" spacing="5"/>
+		<view:DuxiuDownTaskUI width="100%" label="任务" id="task"/>
+	</mx:ViewStack>
+</mx:Box>

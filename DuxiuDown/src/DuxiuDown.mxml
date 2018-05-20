@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" 
+						xmlns:components="sigma.lib.components.*" 
+						xmlns:view="sigma.app.duxiu.view.*" 
+						paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0"
+						horizontalScrollPolicy="off" verticalScrollPolicy="off"
+						backgroundColor="#cccccc" titleTextStyleName="bigTitle"
+						applicationComplete="initWindow()" creationComplete="init()" close="finalize()">
+	
+	<mx:Style source="default.css"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import sigma.app.duxiu.DuxiuDownManager;
+			import sigma.lib.utils.WindowUtil;
+			
+			private var m_duxiu: DuxiuDownManager;
+			
+			private function initWindow(): void
+			{
+				this.title = "读秀书页下载器";
+				WindowUtil.maximize(this);
+			}
+			
+			private function init(): void
+			{
+				m_duxiu = new DuxiuDownManager();
+				m_duxiu.initialize(this.ui);
+				m_duxiu.activate();
+			}
+			
+			private function finalize(): void
+			{
+				m_duxiu.deactivate();
+				m_duxiu.finalize();
+				m_duxiu = null;
+			}
+		]]>
+	</mx:Script>
+	
+	<view:DuxiuDownUI width="100%" height="100%" id="ui"/>
+</mx:WindowedApplication>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Form xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:controls="sigma.lib.controls.*" 
+		 width="100%" height="100%">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		.readOnly
+		{
+			editable: false;
+			backgroundColor: #969B99;
+			borderStyle: solid;
+			borderColor: #000000;
+		}
+	</fx:Style>
+	
+	<mx:FormHeading label="参数"/>
+	<mx:FormItem label="title:" width="100%">
+		<mx:TextInput id="titleValue" width="100%"/>
+	</mx:FormItem>
+	<mx:FormItem label="ssNo:" width="100%">
+		<mx:TextInput id="ssNoValue" styleName="readOnly" editable="false" width="100%"/>
+	</mx:FormItem>
+	<mx:FormItem label="str:" width="100%">
+		<mx:TextInput id="STR" width="100%"/>
+	</mx:FormItem>
+	<mx:FormItem label="spage:" width="100%">
+		<mx:TextInput id="spageValue" width="100%"/>
+	</mx:FormItem>
+	<mx:FormItem label="epage:" width="100%">
+		<mx:TextInput id="epageValue" width="100%"/>
+	</mx:FormItem>
+	<mx:FormHeading label="下载"/>
+	<mx:FormItem label="保存到:" width="100%">
+		<mx:TextInput id="dirSave" width="100%"/>
+	</mx:FormItem>
+	<mx:FormItem label="图尺寸:" width="100%">
+		<mx:ComboBox id="pageZoom" cornerRadius="0" width="100%"/>
+	</mx:FormItem>
+	<mx:FormItem label="页类型:" width="100%">
+		<mx:ComboBox id="pageType" cornerRadius="0" width="100%"/>
+	</mx:FormItem>
+	<mx:FormItem label="起始页:" width="100%">
+		<mx:TextInput id="fromPage" width="100%"/>
+	</mx:FormItem>
+	<mx:FormItem label="结束页:" width="100%">
+		<mx:TextInput id="toPage" width="100%"/>
+	</mx:FormItem>
+	<controls:FormItemEx label="提示信息:" width="100%" height="100%" direction="horizontal" verticalAlign="middle">
+		<mx:VBox width="50%" height="100%" verticalGap="0">
+			<mx:Label text="文件统计" fontWeight="bold"/>
+			<mx:TextArea id="statText" width="100%" height="100%" styleName="readOnly" editable="false"/>
+		</mx:VBox>
+		<mx:VBox width="50%" height="100%" verticalGap="0">
+			<mx:Label text="运行日志" fontWeight="bold"/>
+			<mx:TextArea id="logText" width="100%" height="100%" styleName="readOnly" editable="false"/>
+		</mx:VBox>
+	</controls:FormItemEx>
+</mx:Form>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" destructionPolicy="never">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		.readOnly
+		{
+			editable: false;
+			backgroundColor: #969B99;
+			borderStyle: solid;
+			borderColor: #000000;
+		}
+	</fx:Style>
+	
+	<s:Scroller width="100%" height="100%">
+		<s:Group width="100%">
+			<s:Form width="100%">
+				<s:FormHeading label="下载配置"/>
+				<s:FormItem label="图尺寸:" width="100%">
+					<s:DropDownList id="pageZoom" width="100%" height="50"/>
+				</s:FormItem>
+				<s:FormItem label="页类型:" width="100%">
+					<s:DropDownList id="pageType" width="100%" height="50"/>
+				</s:FormItem>
+				<s:FormItem label="起始页:" width="100%">
+					<s:TextInput id="fromPage" width="100%"/>
+				</s:FormItem>
+				<s:FormItem label="结束页:" width="100%">
+					<s:TextInput id="toPage" width="100%"/>
+				</s:FormItem>
+			</s:Form>
+		</s:Group>
+	</s:Scroller>
+</s:View>

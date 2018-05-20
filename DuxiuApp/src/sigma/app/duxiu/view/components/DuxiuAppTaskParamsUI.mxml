@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" destructionPolicy="never">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		.readOnly
+		{
+			editable: false;
+			backgroundColor: #969B99;
+			borderStyle: solid;
+			borderColor: #000000;
+		}
+	</fx:Style>
+	
+	<s:Scroller width="100%" height="100%">
+		<s:Group width="100%">
+			<s:Form width="100%">
+				<s:FormHeading label="任务参数"/>
+				<s:FormItem label="title:" width="100%">
+					<s:TextInput id="titleValue" width="100%"/>
+				</s:FormItem>
+				<s:FormItem label="ssNo:" width="100%">
+					<s:TextInput id="ssNoValue" styleName="readOnly" editable="false" width="100%"/>
+				</s:FormItem>
+				<s:FormItem label="str:" width="100%">
+					<s:TextInput id="STR" width="100%"/>
+				</s:FormItem>
+				<s:FormItem label="spage:" width="100%">
+					<s:TextInput id="spageValue" width="100%"/>
+				</s:FormItem>
+				<s:FormItem label="epage:" width="100%">
+					<s:TextInput id="epageValue" width="100%"/>
+				</s:FormItem>
+			</s:Form>
+		</s:Group>
+	</s:Scroller>
+</s:View>

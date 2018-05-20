@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:components="sigma.lib.components.*" 
+		title="读秀下载" addedToStage="init()" destructionPolicy="never">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		
+		<fx:Array id="mainAction">
+			<s:Button label="任务" click="showTaskUI()"/>
+			<s:Button label="书签" click="showBookmarkUI()"/>
+			<s:Button label="浏览" click="switchBrowse()"/>
+		</fx:Array>
+		
+		<fx:Array id="browseTitle">
+			<s:TextInput width="100%" text="前往此地址" id="txtURL" focusIn="onFocusIn()" focusOut="onFocusOut()"/>
+		</fx:Array>
+		
+		<fx:Array id="browseAction">
+			<s:Button label="▼" click="showMenuUI()"/>
+			<s:Button label="取消" click="switchBrowse()"/>
+		</fx:Array>
+		
+	</fx:Declarations>
+	
+	<components:MobileWebView id="webView"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import spark.components.ViewMenuItem;
+			
+			import sigma.lib.utils.BrowserUtil;
+			
+			public static const PLACE_HOLDER: String = "前往此地址";
+			
+			
+			private var m_browseEnabled: Boolean;
+			
+			public function get browseEnabled(): Boolean
+			{
+				return m_browseEnabled;
+			}
+			
+			public function set browseEnabled(value: Boolean): void
+			{
+				m_browseEnabled = value;
+				
+				if (value)
+				{
+					this.titleContent = this.browseTitle;
+					this.actionContent = this.browseAction;
+				}
+				else
+				{
+					this.titleContent = null;
+					this.actionContent = this.mainAction;
+				}
+			}
+			
+			private function init(): void
+			{
+				this.browseEnabled = false;
+				this.webView.addEventListener(LocationChangeEvent.LOCATION_CHANGE, onLocationChange);
+				
+				this.stage.addEventListener(KeyboardEvent.KEY_UP, onDeviceKeyUp);
+			}
+			
+			private function onFocusIn(): void
+			{
+				if (this.txtURL.text == PLACE_HOLDER)
+				{
+					this.txtURL.text = "";
+				}
+			}
+			
+			private function onFocusOut(): void
+			{
+				if (this.txtURL.text == "")
+				{
+					this.txtURL.text = PLACE_HOLDER;
+				}
+			}
+			
+			public function get validURL(): String
+			{
+				var location: String = this.txtURL.text;
+				if (location != PLACE_HOLDER && location != "")
+					return location;
+				else
+					return null;
+			}
+			
+			public function get location(): String
+			{
+				return this.webView.url;
+			}
+			
+			public function set location(value: String): void
+			{
+				value = BrowserUtil.getHttpURL(value);
+				if (value != this.location)
+				{
+					this.webView.url = this.txtURL.text = value;
+				}
+			}
+			
+			private function onLocationChange(e: LocationChangeEvent): void
+			{
+				this.txtURL.text = e.location;
+				this.initViewMenuItems();
+			}
+			
+			private function switchBrowse(): void
+			{
+				this.browseEnabled = !this.browseEnabled;
+			}
+			
+			private function showTaskUI(): void
+			{
+				this.navigator.pushView(DuxiuAppTaskUI);
+			}
+			
+			private function showBookmarkUI(): void
+			{
+				this.navigator.pushView(DuxiuAppBookmarkUI);
+			}
+			
+			private function showMenuUI(): void
+			{
+				this.webView.deactivate();
+				this.parentApplication.viewMenuOpen = true;
+			}
+			
+			private function onDeviceKeyUp(e: KeyboardEvent): void
+			{
+				if (e.keyCode == Keyboard.MENU)
+				{
+					if (this.parentApplication.viewMenuOpen)
+					{
+						this.webView.activate();
+					}
+					else
+					{
+						this.webView.deactivate();
+					}
+				}
+			}
+			
+			private function initViewMenuItems(): void
+			{
+				var menuData: Array = this.webView.getHistoryMenuData();
+				
+				var items: Vector.<ViewMenuItem> = new Vector.<ViewMenuItem>();
+				for each (var data: Object in menuData)
+				{
+					var item: ViewMenuItem = new ViewMenuItem();
+					item.label = data.label;
+					item.enabled = data.enabled;
+					items.push(item);
+					
+					var item_handle: Function = data.handle as Function;
+					if (item_handle != null)
+					{
+						item.addEventListener(MouseEvent.CLICK, item_handle);
+					}
+				}
+				this.viewMenuItems = items;
+			}
+		]]>
+	</fx:Script>
+</s:View>
