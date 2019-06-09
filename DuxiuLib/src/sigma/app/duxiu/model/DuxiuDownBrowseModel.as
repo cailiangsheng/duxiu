@@ -23,6 +23,7 @@ package sigma.app.duxiu.model
 		{
 			m_bookmarks = 
 				Vector.<BrowseItem>([
+					new BrowseItem("深圳文献", "search.szdnet.org.cn"),
 					new BrowseItem("读秀首页", "www.duxiu.com"),
 					new BrowseItem("指针首页", "www.zhizhen.com"),
 					new BrowseItem("超星首页", "www.sslibrary.com"),
