@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" verticalGap="{spacing}">
+	<mx:HBox id="bar" width="100%" verticalAlign="middle" horizontalGap="{spacing / 2}" 
+		paddingLeft="{spacing}" paddingRight="{spacing}" paddingTop="{spacing}">
+		<mx:Label text="地址:" fontWeight="bold"/>
+		<mx:TextInput id="url" width="100%" enter="{location = url.text}"/>
+		<mx:PopUpButton id="history" label="转到" click="{location = url.text}" popUp="{getHistoryMenu(html, history)}" 
+			openDuration="0" closeDuration="0"/>
+	</mx:HBox>
+	<mx:HTML id="html" width="100%" height="100%" 
+		htmlHost="{new SingleHTMLHost(false)}" locationChange="{url.text = html.location}"/>
+	<mx:Script>
+		<![CDATA[
+			import __AS3__.vec.Vector;
+			
+			import mx.controls.Menu;
+			import mx.controls.PopUpButton;
+			import mx.events.MenuEvent;
+			
+			import sigma.lib.utils.BrowserUtil;
+			
+			[Bindable]
+			public var spacing: int;
+			
+			public function set location(value: String): void
+			{
+				value = BrowserUtil.getHttpURL(value);
+				if (value != this.location)
+				{
+					html.location = url.text = value;
+				}
+			}
+			
+			public function get location(): String
+			{
+				return html.location;
+			}
+			
+			public static function getHistoryMenu(html: HTML, history: PopUpButton): Menu
+			{
+				var historyMenu: Menu = new Menu();
+				var historyMenuData: Array = 
+				[
+					{label: "后退", handle: html.historyBack, enabled: false},		//0
+					{label: "前进", handle: html.historyForward, enabled: false},	//1
+					{label: "刷新", handle: html.reload, enabled: false},			//2
+					{label: "停止", handle: html.cancelLoad, enabled: false},		//3
+				];
+				historyMenu.dataProvider = historyMenuData;
+				
+				function onMenuOpen(e: Event): void
+				{
+					historyMenu.dataProvider = null;
+					historyMenuData[0].enabled = (html.historyPosition > 0);
+					historyMenuData[1].enabled = (html.historyPosition < html.historyLength - 1);
+					historyMenuData[2].enabled = true;
+					historyMenuData[3].enabled = !html.loaded;
+					historyMenu.dataProvider = historyMenuData;
+				}
+				function onMenuItemClick(e: MenuEvent): void
+				{
+					e.item.handle();
+				}
+				history.addEventListener(Event.OPEN, onMenuOpen);
+				historyMenu.addEventListener(MenuEvent.ITEM_CLICK, onMenuItemClick);
+				return historyMenu;
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

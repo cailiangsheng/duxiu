@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="sigma.lib.utils.DisplayUtil"/>
+    <classEntry path="sigma.lib.tools.html.IHtmlVarSearcher"/>
+    <classEntry path="sigma.lib.tools.html.MobileHtmlVarSearcher"/>
+    <classEntry path="sigma.lib.tools.html.BaseHtmlVarSearcher"/>
+    <classEntry path="sigma.lib.tools.html.TextHtmlVarSearcher"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

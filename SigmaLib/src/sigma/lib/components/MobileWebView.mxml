@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 creationComplete="init()"
+		 addedToStage="onAddedToStage()" 
+		 removedFromStage="onRemovedFromStage()"
+		 resize="validateViewport()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[Event(name="locationChange", type="flash.events.LocationChangeEvent")]
+	</fx:Metadata>
+	
+	<mx:UIComponent width="100%" height="100%" id="ui"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.setTimeout;
+			
+			import mx.core.FlexGlobals;
+			
+			import sigma.lib.utils.BrowserUtil;
+			import sigma.lib.utils.DisplayUtil;
+			
+			private var m_webView: StageWebView;
+			private var m_url: String;
+			private var m_htmlText: String;
+			private var m_isLoading: Boolean;
+			
+			private var m_isActive: Boolean;
+			private var m_webViewHolder: Bitmap;
+			
+			private function init(): void
+			{
+				m_webViewHolder = new Bitmap();
+				this.ui.addChild(m_webViewHolder);
+			}
+			
+			public function get isLoading(): Boolean
+			{
+				return m_isLoading;
+			}
+			
+			public function get location(): String
+			{
+				if (m_webView)
+				{
+					return m_webView.location;
+				}
+				return null;
+			}
+			
+			public function set url(value: String): void
+			{
+				value = BrowserUtil.getHttpURL(value);
+				if (m_url != value)
+				{
+					m_url = value;
+					
+					if (m_webView)
+					{
+						m_isLoading = true;
+						m_webView.loadURL(m_url);
+					}
+				}
+			}
+			
+			public function get url(): String
+			{
+				return m_url;
+			}
+			
+			public function set htmlText(value: String): void
+			{
+				if (m_htmlText != value)
+				{
+					m_htmlText = value;
+					
+					if (m_webView)
+					{
+						m_isLoading = true;
+						m_webView.loadString(m_htmlText);
+					}
+				}
+			}
+			
+			public function get htmlText(): String
+			{
+				return m_htmlText;
+			}
+			
+			private function validateViewport(): void
+			{
+				if (m_webView)
+				{
+					var ptPos: Point = DisplayUtil.calcStageOffset(this);
+					var curScale: Number = FlexGlobals.topLevelApplication.runtimeDPI / FlexGlobals.topLevelApplication.applicationDPI;
+					m_webView.viewPort = new Rectangle(ptPos.x * curScale, ptPos.y * curScale, this.width * curScale, this.height * curScale);
+					
+					makeSnapshot();
+				}
+			}
+			
+			private function onAddedToStage(): void
+			{
+				this.stage.addEventListener(MouseEvent.MOUSE_DOWN, onWebViewHit);
+				
+				if (m_webView == null)
+				{
+					m_webView = new StageWebView();
+					m_webView.addEventListener(Event.COMPLETE, onComplete);
+					m_webView.addEventListener(ErrorEvent.ERROR, onError);
+					m_webView.addEventListener(LocationChangeEvent.LOCATION_CHANGE, onLocationChanged);
+				
+					if (m_url)
+					{
+						m_isLoading = true;
+						m_webView.loadURL(m_url);
+					}
+					
+					if (m_htmlText)
+					{
+						m_isLoading = true;
+						m_webView.loadString(m_htmlText);
+					}
+				}
+				
+				activate();
+				
+				validateViewport();
+			}
+			
+			private function onRemovedFromStage(): void
+			{
+				this.stage.removeEventListener(MouseEvent.MOUSE_DOWN, onWebViewHit);
+				
+				// hide
+				deactivate();
+				
+				if (m_webView)
+				{
+					m_webView.viewPort = null;
+				
+					// avoid recreating
+//					m_webView.dispose();
+//					m_webView = null;
+				}
+			}
+			
+			public override function set visible(value:Boolean):void
+			{
+				super.visible = value;
+				
+				if (m_webView)
+				{
+					m_webView.stage = value ? this.stage : null;
+				}
+			}
+			
+			public function activate(): void
+			{
+				if (m_isActive)
+					return;
+				
+				m_isActive = true;
+					
+				// Clear Snapshot
+				clearSnapshot();
+				
+				// Show WebView
+				if (m_webView)
+				{
+					m_webView.stage = this.stage;
+					setTimeout(m_webView.assignFocus, 200);
+				}
+			}
+			
+			public function deactivate(): void
+			{
+				if (!m_isActive)
+					return;
+				
+				m_isActive = false;
+				
+				// Make Snapshot (and Hide WebView)
+				makeSnapshot();
+			}
+			
+			private function clearSnapshot(): void
+			{
+				if (m_webViewHolder.bitmapData)
+				{
+					m_webViewHolder.bitmapData.dispose();
+					m_webViewHolder.bitmapData = null;
+					m_webViewHolder.width = 0;
+					m_webViewHolder.height = 0;
+				}
+			}
+			
+			private function makeSnapshot(): void
+			{
+				if (m_webView && m_webView.viewPort)
+				{
+					// Clear Snapshot
+					clearSnapshot();
+					
+					// Create Snapshot
+					m_webViewHolder.bitmapData = new BitmapData(m_webView.viewPort.width, m_webView.viewPort.height);
+					trySnapshot();
+				}
+			}
+			
+			private function trySnapshot(): void
+			{
+				if (m_webView && this.stage)
+				{
+					m_webView.stage = this.stage;
+					
+					setTimeout(doSnapshot, 200);
+				}
+			}
+			
+			// after one frame time-delay
+			// to make sure the WebView is re-rendered
+			private function doSnapshot(): void
+			{
+				if (!m_isActive && 
+					m_webViewHolder && 
+					m_webView.viewPort && 
+					m_webViewHolder.bitmapData)
+				{
+					m_webView.drawViewPortToBitmapData(m_webViewHolder.bitmapData);
+					
+					m_webViewHolder.width = this.width;
+					m_webViewHolder.height = this.height;
+				}
+				
+				if (m_webView)
+					m_webView.stage = m_isActive ? this.stage : null;
+			}
+			
+			private function onWebViewHit(e: MouseEvent): void
+			{
+				var objs: Array = this.stage.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
+				var obj: DisplayObject = objs.pop();
+				if (obj && (this == obj || this.contains(obj)))
+				{
+					this.activate();
+				}
+			}
+			
+			private function onComplete(e: Event): void
+			{
+				m_isLoading = false;
+				trySnapshot();
+			}
+			
+			private function onError(e: ErrorEvent): void
+			{
+				trace(e.text);
+				m_isLoading = false;
+				trySnapshot();
+			}
+			
+			private function onLocationChanged(e: LocationChangeEvent): void
+			{
+				this.dispatchEvent(e);
+				trySnapshot();
+			}
+			
+			public function getHistoryMenuData(): Array
+			{
+				var historyMenuData: Array = 
+					[
+						{
+							label: "后退", 
+							handle: function(e:*):void {m_webView.historyBack()}, 
+							enabled: m_webView.isHistoryBackEnabled
+						},	//0
+						{
+							label: "前进", 
+							handle: function(e:*):void {m_webView.historyForward()}, 
+							enabled: m_webView.isHistoryForwardEnabled
+						},	//1
+						{
+							label: "刷新", 
+							handle: function(e:*):void {m_webView.reload()}, 
+							enabled: true
+						},	//2
+						{
+							label: "停止", 
+							handle: function(e:*):void {m_webView.stop()}, 
+							enabled: this.isLoading
+						},	//3
+					];
+				return historyMenuData;
+			}
+		]]>
+	</fx:Script>
+</s:Group>
